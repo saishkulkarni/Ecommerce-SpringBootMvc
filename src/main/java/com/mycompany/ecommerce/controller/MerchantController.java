@@ -1,7 +1,5 @@
 package com.mycompany.ecommerce.controller;
 
-import java.time.LocalDate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -9,15 +7,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mycompany.ecommerce.dto.Merchant;
+import com.mycompany.ecommerce.service.MerchantService;
 
 import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/merchant")
 public class MerchantController {
+	
+	@Autowired
+	MerchantService merchantService;
 
 	@Autowired
 	Merchant merchant;
@@ -34,10 +35,10 @@ public class MerchantController {
 	}
 
 	@PostMapping("/signup")
-	public String signup(@Valid Merchant merchant,BindingResult result) {
-		if(result.hasErrors())
+	public String signup(@Valid Merchant merchant, BindingResult result) {
+		if (result.hasErrors())
 			return "MerchantSignup";
 		else
-		return merchant.toString();
+			return merchantService.signup(merchant);
 	}
 }
