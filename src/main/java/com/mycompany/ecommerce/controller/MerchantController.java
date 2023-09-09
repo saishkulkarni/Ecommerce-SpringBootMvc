@@ -16,7 +16,7 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/merchant")
 public class MerchantController {
-	
+
 	@Autowired
 	MerchantService merchantService;
 
@@ -35,10 +35,10 @@ public class MerchantController {
 	}
 
 	@PostMapping("/signup")
-	public String signup(@Valid Merchant merchant, BindingResult result) {
-		if (result.hasErrors())
+	public String signup(@Valid Merchant merchant, ModelMap modelMap, BindingResult result) {
+		if (result.hasErrors()) {
 			return "MerchantSignup";
-		else
-			return merchantService.signup(merchant);
+		} else
+			return merchantService.signup(merchant, modelMap);
 	}
 }

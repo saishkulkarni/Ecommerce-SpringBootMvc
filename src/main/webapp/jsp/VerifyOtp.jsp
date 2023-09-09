@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>Enter Otp</h1>
+<h1>Enter Otp</h1>${id}
 </body>
 </html>

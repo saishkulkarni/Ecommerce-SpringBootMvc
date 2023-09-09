@@ -9,6 +9,7 @@
 </head>
 <body>
 	<h1>Merchant Signup</h1>
+	<h1 style="color: red">${neg}</h1>
 	<x:form action="/merchant/signup" method="post"
 		modelAttribute="merchant">
 		<fieldset>
