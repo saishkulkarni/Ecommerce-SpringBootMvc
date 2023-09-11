@@ -1,4 +1,4 @@
-package com.mycompany.ecommerce.helper;
+  package com.mycompany.ecommerce.helper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;

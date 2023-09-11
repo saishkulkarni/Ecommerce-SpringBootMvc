@@ -23,5 +23,10 @@ public class MerchantDao {
 	public Merchant save(Merchant merchant) {
 		return merchantRepository.save(merchant);
 	}
+	
+	public Merchant fetchById(int id)
+	{
+		return merchantRepository.findById(id).orElse(null);
+	}
 
 }

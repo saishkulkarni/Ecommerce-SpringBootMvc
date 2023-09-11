@@ -34,4 +34,23 @@ public class MerchantService {
 		}
 	}
 
+	public String verfiyOtp(int id, int otp, ModelMap modelMap) {
+		Merchant merchant = merchantDao.fetchById(id);
+		if (merchant == null) {
+			modelMap.put("neg", "Something went Wrong");
+			return "Main";
+		} else {
+			if (merchant.getOtp() == otp) {
+				merchant.setStatus(true);
+				merchantDao.save(merchant);
+				modelMap.put("pos", "Account Verified Successfully");
+				return "Merchant";
+			} else {
+				modelMap.put("neg", "OTP MissMatch");
+				modelMap.put("id", id);
+				return "VerifyOtp";
+			}
+		}
+	}
+
 }

@@ -7,6 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h1>Enter Otp</h1>${id}
+<form action="/merchant/verify-otp" method="post">
+<input type="text" name="id" value="${id}" hidden="hidden">
+Enter OTP:<input type="text" name="otp">
+<button>submit</button>
+</form>
 </body>
 </html>

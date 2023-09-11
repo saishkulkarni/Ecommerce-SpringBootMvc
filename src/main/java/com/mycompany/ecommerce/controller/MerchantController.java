@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mycompany.ecommerce.dto.Merchant;
 import com.mycompany.ecommerce.service.MerchantService;
@@ -35,10 +36,15 @@ public class MerchantController {
 	}
 
 	@PostMapping("/signup")
-	public String signup(@Valid Merchant merchant, ModelMap modelMap, BindingResult result) {
+	public String signup(@Valid Merchant merchant, BindingResult result, ModelMap modelMap) {
 		if (result.hasErrors()) {
 			return "MerchantSignup";
 		} else
 			return merchantService.signup(merchant, modelMap);
+	}
+
+	@PostMapping("/verify-otp")
+	public String verify(@RequestParam int otp, @RequestParam int id,ModelMap modelMap) {
+		return merchantService.verfiyOtp(id, otp,modelMap);
 	}
 }
