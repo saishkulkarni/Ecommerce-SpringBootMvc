@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="x" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,44 +9,52 @@
 </head>
 <body>
 	<h1>Customer Signup</h1>
-	<form action="/customer/signup" method="get">
+	<h1 style="color:green">${pos}</h1>
+<h1 style="color:red">${neg}</h1>
+	<x:form action="/customer/signup" method="post"
+		modelAttribute="customer">
 		<fieldset>
 			<legend>Signup Here,</legend>
 			<table>
 				<tr>
 					<th>Name:</th>
-					<th><input type="text" name="name" required="required"></th>
+					<th><x:input path="name" /></th>
+					<th><span style="color: red"><x:errors path="name" /></span></th>
 				</tr>
 				<tr>
 					<th>Mobile:</th>
-					<th><input type="tel" name="mobile" pattern="[0-9]{10}"
-						required="required"></th>
+					<th><x:input type="tel" path="mobile" /></th>
+					<th><span style="color: red"><x:errors path="mobile" /></span></th>
 				</tr>
 				<tr>
 					<th>Email:</th>
-					<th><input type="email" name="email" required="required"></th>
+					<th><x:input path="email" /></th>
+					<th><span style="color: red"><x:errors path="email" /></span></th>
 				</tr>
 				<tr>
 					<th>Password:</th>
-					<th><input type="password" name="password" required="required"></th>
+					<th><x:password path="password" /></th>
+					<th><span style="color: red"><x:errors path="password" /></span></th>
 				</tr>
 				<tr>
 					<th>Date of Birth:</th>
-					<th><input type="date" name="dob" required="required"></th>
+					<th><x:input type="date" path="dob" /></th>
+					<th><span style="color: red"><x:errors path="dob" /></span></th>
 				</tr>
 				<tr>
 					<th>Gender:</th>
-					<th><input type="radio" name="gender" value="male"
-						required="required">Male <input type="radio" name="gender"
-						value="female">Female</th>
+					<th><x:radiobutton path="gender" value="male" />Male <x:radiobutton
+							path="gender" value="female" />Female</th>
+					<th><span style="color: red"><x:errors path="gender" /></span></th>
 				</tr>
 				<tr>
 					<th><button>Signup</button></th>
 					<th><button type="reset">Cancel</button></th>
+					<th></th>
 				</tr>
 			</table>
 		</fieldset>
-	</form>
+	</x:form>
 	<br>
 	<a href="/customer"><button>Back</button></a>
 </body>

@@ -8,6 +8,8 @@
 </head>
 <body>
 <h1>This is Home Page</h1>
+<h1 style="color:green">${pos}</h1>
+<h1 style="color:red">${neg}</h1>
 <a href="/admin"><button>Admin</button></a>
 <a href="/merchant"><button>Merchant</button></a>
 <a href="/customer"><button>Customer</button></a>

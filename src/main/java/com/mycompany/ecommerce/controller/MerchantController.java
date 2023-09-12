@@ -44,7 +44,8 @@ public class MerchantController {
 	}
 
 	@PostMapping("/verify-otp")
-	public String verify(@RequestParam int otp, @RequestParam int id,ModelMap modelMap) {
-		return merchantService.verfiyOtp(id, otp,modelMap);
+	public String verify(@RequestParam int otp, @RequestParam int id, ModelMap modelMap) {
+		return merchantService.verfiyOtp(id, otp, modelMap);
 	}
+
 }

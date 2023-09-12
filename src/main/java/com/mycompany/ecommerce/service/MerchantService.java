@@ -20,17 +20,34 @@ public class MerchantService {
 	MailHelper mailHelper;
 
 	public String signup(Merchant merchant, ModelMap modelMap) {
-		if (merchantDao.fetchByEmail(merchant.getEmail()) == null
-				&& merchantDao.fetchByMobile(merchant.getMobile()) == null) {
+		Merchant merchant1 = merchantDao.fetchByEmail(merchant.getEmail());
+		Merchant merchant2 = merchantDao.fetchByMobile(merchant.getMobile());
+		if (merchant1 == null && merchant2 == null) {
 			int otp = new Random().nextInt(100000, 999999);
 			merchant.setOtp(otp);
 			merchantDao.save(merchant);
 			mailHelper.sendOtp(merchant);
 			modelMap.put("id", merchant.getId());
-			return "VerifyOtp";
+			return "VerifyOtp1";
 		} else {
-			modelMap.put("neg", "Email or Phone Already Exists");
-			return "MerchantSignup";
+			if (merchant1 != null) {
+				if (merchant1.isStatus()) {
+					modelMap.put("neg", "Email Already Exists");
+					return "MerchantSignup";
+				} else {
+					if (merchant2 != null) {
+						mailHelper.sendOtp(merchant1);
+						modelMap.put("id", merchant1.getId());
+						return "VerifyOtp1";
+					} else {
+						modelMap.put("neg", "Same Email with Different Number Exists");
+						return "MerchantSignup";
+					}
+				}
+			} else {
+				modelMap.put("neg", "Phone Number Already Exists");
+				return "MerchantSignup";
+			}
 		}
 	}
 
@@ -48,7 +65,7 @@ public class MerchantService {
 			} else {
 				modelMap.put("neg", "OTP MissMatch");
 				modelMap.put("id", id);
-				return "VerifyOtp";
+				return "VerifyOtp1";
 			}
 		}
 	}
