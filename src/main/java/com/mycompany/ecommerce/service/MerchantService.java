@@ -8,6 +8,7 @@ import org.springframework.ui.ModelMap;
 
 import com.mycompany.ecommerce.dao.MerchantDao;
 import com.mycompany.ecommerce.dto.Merchant;
+import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.helper.MailHelper;
 
 @Service
@@ -66,6 +67,33 @@ public class MerchantService {
 				modelMap.put("neg", "OTP MissMatch");
 				modelMap.put("id", id);
 				return "VerifyOtp1";
+			}
+		}
+	}
+
+	public String login(LoginHelper helper, ModelMap map) {
+		Merchant merchant=merchantDao.fetchByEmail(helper.getEmail());
+		if(merchant==null)
+		{
+			map.put("neg", "InCorrect Email");
+			return "Merchant";
+		}
+		else {
+			if(merchant.getPassword().equals(helper.getPassword()))
+			{
+				if(merchant.isStatus())
+				{
+				map.put("pos", "Login Success");
+				return "MerchantHome";
+				}
+				else {
+					map.put("neg", "Verify Your OTP First");
+					return "Merchant";
+				}
+			}
+			else {
+				map.put("neg", "InCorrect Password");
+				return "Merchant";
 			}
 		}
 	}
