@@ -8,9 +8,10 @@
 <title>Signup</title>
 </head>
 <body>
+	<h1 style="color: green">${pos}</h1>
+	<h1 style="color: red">${neg}</h1>
 	<h1>Customer Signup</h1>
-	<h1 style="color:green">${pos}</h1>
-<h1 style="color:red">${neg}</h1>
+
 	<x:form action="/customer/signup" method="post"
 		modelAttribute="customer">
 		<fieldset>

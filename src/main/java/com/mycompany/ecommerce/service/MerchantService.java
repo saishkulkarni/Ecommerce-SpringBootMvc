@@ -11,6 +11,8 @@ import com.mycompany.ecommerce.dto.Merchant;
 import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.helper.MailHelper;
 
+import jakarta.servlet.http.HttpSession;
+
 @Service
 public class MerchantService {
 
@@ -71,28 +73,24 @@ public class MerchantService {
 		}
 	}
 
-	public String login(LoginHelper helper, ModelMap map) {
-		Merchant merchant=merchantDao.fetchByEmail(helper.getEmail());
-		if(merchant==null)
-		{
-			map.put("neg", "InCorrect Email");
+	public String login(LoginHelper helper, ModelMap map, HttpSession session) {
+		Merchant merchant = merchantDao.fetchByEmail(helper.getEmail());
+		if (merchant == null) {
+			map.put("neg", "Incorrect Email");
 			return "Merchant";
-		}
-		else {
-			if(merchant.getPassword().equals(helper.getPassword()))
-			{
-				if(merchant.isStatus())
-				{
-				map.put("pos", "Login Success");
-				return "MerchantHome";
-				}
-				else {
+		} else {
+			if (merchant.getPassword().equals(helper.getPassword())) {
+				if (merchant.isStatus()) {
+					session.setMaxInactiveInterval(150);
+					session.setAttribute("merchant", merchant);
+					map.put("pos", "Login Success"); 
+					return "MerchantHome";
+				} else {
 					map.put("neg", "Verify Your OTP First");
 					return "Merchant";
 				}
-			}
-			else {
-				map.put("neg", "InCorrect Password");
+			} else {
+				map.put("neg", "Incorrect Password");
 				return "Merchant";
 			}
 		}

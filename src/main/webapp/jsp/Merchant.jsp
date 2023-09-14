@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,9 +7,10 @@
 <title>Merchant</title>
 </head>
 <body>
-<h1>This is Merchant Page</h1>
-<h1 style="color:green">${pos}</h1>
-<h1 style="color:red">${neg}</h1>
+	<h1 style="color: green">${pos}</h1>
+	<h1 style="color: red">${neg}</h1>
+	<h1>This is Merchant Page</h1>
+
 	<form action="/merchant/login" method="post">
 		<fieldset>
 			<legend>Login Here,</legend>
@@ -27,7 +28,8 @@
 					<th><button type="reset">Cancel</button></th>
 				</tr>
 				<tr>
-				<th colspan="2"><a href="/merchant/signup">New? Click here to Create Account</a></th>
+					<th colspan="2"><a href="/merchant/signup">New? Click here
+							to Create Account</a></th>
 				</tr>
 			</table>
 		</fieldset>

@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mycompany.ecommerce.dto.Merchant;
+import com.mycompany.ecommerce.dto.Product;
 import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.service.MerchantService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
@@ -24,6 +26,9 @@ public class MerchantController {
 
 	@Autowired
 	Merchant merchant;
+
+	@Autowired
+	Product product;
 
 	@GetMapping
 	public String loadHome() {
@@ -48,11 +53,22 @@ public class MerchantController {
 	public String verify(@RequestParam int otp, @RequestParam int id, ModelMap modelMap) {
 		return merchantService.verfiyOtp(id, otp, modelMap);
 	}
-	
+
 	@PostMapping("/login")
-	public String login(LoginHelper helper,ModelMap map)
-	{
-		return merchantService.login(helper,map);
+	public String login(LoginHelper helper, ModelMap map, HttpSession session) {
+		return merchantService.login(helper, map, session);
+	}
+
+	@GetMapping("/add-product")
+	public String addProduct(ModelMap map, HttpSession session) {
+		Merchant merchant = (Merchant) session.getAttribute("merchant");
+		if (merchant != null) {
+			map.put("product", product);
+			return "AddProduct";
+		} else {
+			map.put("neg", "Invalid Session");
+			return "Main";
+		}
 	}
 
 }

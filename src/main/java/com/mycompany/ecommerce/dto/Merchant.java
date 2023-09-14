@@ -32,7 +32,7 @@ public class Merchant {
 	private String email;
 	@NotNull
 	@DecimalMin(value = "6000000000", message = "*Enter Proper Number")
-	@DecimalMax(value = "10000000000", message = "*Enter Proper Number")
+	@DecimalMax(value = "9999999999", message = "*Enter Proper Number")
 	private long mobile;
 	@Size(min = 8, message = "*Minimum 8 Charecters")
 	private String password;
