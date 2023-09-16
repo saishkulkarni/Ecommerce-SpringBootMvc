@@ -1,12 +1,15 @@
 package com.mycompany.ecommerce.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -43,4 +46,7 @@ public class Merchant {
 	private LocalDate dob;
 	private boolean status;
 	private int otp;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	List<Product> products;
 }

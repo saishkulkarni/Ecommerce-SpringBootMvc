@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -22,8 +23,10 @@ public class Product {
 	@NotEmpty(message = "*This is Required Field")
 	private String name;
 	@NotNull(message = "*This is Required Field")
+	@DecimalMin(value = "1",message = "*Enter Value Greater than 1")
 	private int stock;
 	@NotNull(message = "*This is Required Field")
+	@DecimalMin(value = "1",message = "*Enter Value Greater than 1")
 	private double price;
 	@NotEmpty(message = "*This is Required Field")
 	private String category;
