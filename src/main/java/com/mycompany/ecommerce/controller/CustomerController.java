@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mycompany.ecommerce.dto.Customer;
+import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.service.CustomerService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
@@ -45,5 +47,10 @@ public class CustomerController {
 	@PostMapping("/verify-otp")
 	public String verify(@RequestParam int otp, @RequestParam int id, ModelMap modelMap) {
 		return customerService.verfiyOtp(id, otp, modelMap);
+	}
+	
+	@PostMapping("/login")
+	public String login(LoginHelper helper, ModelMap map, HttpSession session) {
+		return customerService.login(helper, map, session);
 	}
 }

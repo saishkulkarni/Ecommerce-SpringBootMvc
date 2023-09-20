@@ -11,7 +11,7 @@
 	<h1 style="color: red">${neg}</h1>
 	<h1>This is Admin Page</h1>
 
-	<form>
+	<form action="/admin/login" method="post">
 		<fieldset>
 			<legend>Login Here,</legend>
 			<table>

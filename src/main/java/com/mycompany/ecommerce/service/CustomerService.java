@@ -8,7 +8,11 @@ import org.springframework.ui.ModelMap;
 
 import com.mycompany.ecommerce.dao.CustomerDao;
 import com.mycompany.ecommerce.dto.Customer;
+import com.mycompany.ecommerce.helper.AES;
+import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.helper.MailHelper;
+
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class CustomerService {
@@ -24,6 +28,7 @@ public class CustomerService {
 		Customer customer2 = customerDao.fetchByMobile(customer.getMobile());
 		if (customer1 == null && customer2 == null) {
 			int otp = new Random().nextInt(100000, 999999);
+			customer.setPassword(AES.encrypt(customer.getPassword(), "123"));
 			customer.setOtp(otp);
 			customerDao.save(customer);
 			mailHelper.sendOtp(customer);
@@ -66,6 +71,29 @@ public class CustomerService {
 				modelMap.put("neg", "OTP MissMatch");
 				modelMap.put("id", id);
 				return "VerifyOtp2";
+			}
+		}
+	}
+
+	public String login(LoginHelper helper, ModelMap map, HttpSession session) {
+		Customer customer = customerDao.fetchByEmail(helper.getEmail());
+		if (customer == null) {
+			map.put("neg", "Incorrect Email");
+			return "Customer";
+		} else {
+			if (AES.decrypt(customer.getPassword(), "123").equals(helper.getPassword())) {
+				if (customer.isStatus()) {
+					session.setMaxInactiveInterval(150);
+					session.setAttribute("customer", customer);
+					map.put("pos", "Login Success");
+					return "CustomerHome";
+				} else {
+					map.put("neg", "Verify Your OTP First");
+					return "Customer";
+				}
+			} else {
+				map.put("neg", "Incorrect Password");
+				return "Customer";
 			}
 		}
 	}

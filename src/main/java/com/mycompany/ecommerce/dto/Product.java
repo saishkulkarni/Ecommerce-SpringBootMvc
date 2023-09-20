@@ -23,13 +23,14 @@ public class Product {
 	@NotEmpty(message = "*This is Required Field")
 	private String name;
 	@NotNull(message = "*This is Required Field")
-	@DecimalMin(value = "1",message = "*Enter Value Greater than 1")
+	@DecimalMin(value = "1", message = "*Enter Value Greater than 1")
 	private int stock;
 	@NotNull(message = "*This is Required Field")
-	@DecimalMin(value = "1",message = "*Enter Value Greater than 1")
+	@DecimalMin(value = "1", message = "*Enter Value Greater than 1")
 	private double price;
 	@NotEmpty(message = "*This is Required Field")
 	private String category;
+	boolean approved;
 
 	@Lob
 	@Column(columnDefinition = "MEDIUMBLOB")
