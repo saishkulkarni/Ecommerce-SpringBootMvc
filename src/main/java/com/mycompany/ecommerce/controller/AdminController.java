@@ -15,18 +15,28 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-	
+
 	@Autowired
 	AdminService adminService;
-	
+
 	@GetMapping
 	public String loadHome() {
 		return "Admin";
 	}
-	
+
+	@GetMapping("/home")
+	public String loadHome(HttpSession session, ModelMap modelMap) {
+		if (session.getAttribute("admin") != null) {
+			return "AdminHome";
+		} else {
+			modelMap.put("neg", "Inavlid Session");
+			return "Admin";
+		}
+
+	}
+
 	@PostMapping("/login")
-	public String login(LoginHelper helper,ModelMap map,HttpSession session)
-	{
-		return adminService.login(helper,map,session);
+	public String login(LoginHelper helper, ModelMap map, HttpSession session) {
+		return adminService.login(helper, map, session);
 	}
 }

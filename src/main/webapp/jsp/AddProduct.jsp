@@ -45,9 +45,11 @@
 	</tr>
 	<tr>
 	<th><button>Add</button></th>
-	<th><button>Cancel</button></th>
+	<th><button type="reset">Cancel</button></th>
 	</tr>
 	</table>
 	</mvc:form>
+	<br>
+	<a href="/merchant/home"><button>Back</button></a>
 </body>
 </html>

@@ -44,11 +44,22 @@ public class CustomerController {
 			return customerService.signup(customer, modelMap);
 	}
 
+	@GetMapping("/home")
+	public String loadHome(HttpSession session, ModelMap modelMap) {
+		if (session.getAttribute("customer") != null) {
+			return "CustomerHome";
+		} else {
+			modelMap.put("neg", "Inavlid Session");
+			return "Customer";
+		}
+
+	}
+
 	@PostMapping("/verify-otp")
 	public String verify(@RequestParam int otp, @RequestParam int id, ModelMap modelMap) {
 		return customerService.verfiyOtp(id, otp, modelMap);
 	}
-	
+
 	@PostMapping("/login")
 	public String login(LoginHelper helper, ModelMap map, HttpSession session) {
 		return customerService.login(helper, map, session);

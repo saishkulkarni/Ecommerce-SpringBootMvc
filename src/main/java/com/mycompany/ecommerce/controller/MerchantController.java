@@ -38,6 +38,17 @@ public class MerchantController {
 		return "Merchant";
 	}
 
+	@GetMapping("/home")
+	public String loadHome(HttpSession session, ModelMap modelMap) {
+		if (session.getAttribute("merchant") != null) {
+			return "MerchantHome";
+		} else {
+			modelMap.put("neg", "Inavlid Session");
+			return "Merchant";
+		}
+
+	}
+
 	@GetMapping("/signup")
 	public String loadSignup(ModelMap map) {
 		map.put("merchant", merchant);
@@ -82,7 +93,7 @@ public class MerchantController {
 			if (result.hasErrors())
 				return "AddProduct";
 			else {
-				 return merchantService.addProduct(product,pic,map,merchant);
+				return merchantService.addProduct(product, pic, map, merchant);
 			}
 		} else {
 			map.put("neg", "Invalid Session");
