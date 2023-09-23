@@ -122,4 +122,15 @@ public class MerchantService {
 		return "MerchantHome";
 	}
 
+	public String fetchProducts(Merchant merchant, ModelMap modelMap) {
+		List<Product> list = merchant.getProducts();
+		if (list.isEmpty()) {
+			modelMap.put("neg", "No Products Available");
+			return "MerchantHome";
+		} else {
+			modelMap.put("list", list);
+			return "MerchantProducts";
+		}
+	}
+
 }

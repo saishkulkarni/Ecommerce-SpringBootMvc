@@ -105,7 +105,7 @@ public class MerchantController {
 	public String fetchProducts(HttpSession session, ModelMap modelMap) {
 		Merchant merchant = (Merchant) session.getAttribute("merchant");
 		if (merchant != null) {
-			merchantService.fetchProducts(merchant, modelMap);
+			return merchantService.fetchProducts(merchant, modelMap);
 		} else {
 			modelMap.put("neg", "Invalid Session");
 			return "Main";
