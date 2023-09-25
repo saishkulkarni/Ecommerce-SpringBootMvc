@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -106,6 +107,18 @@ public class MerchantController {
 		Merchant merchant = (Merchant) session.getAttribute("merchant");
 		if (merchant != null) {
 			return merchantService.fetchProducts(merchant, modelMap);
+		} else {
+			modelMap.put("neg", "Invalid Session");
+			return "Main";
+		}
+	}
+	
+	@GetMapping("/delete/{id}")
+	public String deleteProduct(@PathVariable int id,HttpSession session,ModelMap modelMap)
+	{
+		Merchant merchant = (Merchant) session.getAttribute("merchant");
+		if (merchant != null) {
+			return merchantService.delete(id,modelMap,merchant);
 		} else {
 			modelMap.put("neg", "Invalid Session");
 			return "Main";

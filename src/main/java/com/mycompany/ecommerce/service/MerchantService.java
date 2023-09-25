@@ -11,6 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mycompany.ecommerce.dao.MerchantDao;
+import com.mycompany.ecommerce.dao.ProductDao;
 import com.mycompany.ecommerce.dto.Merchant;
 import com.mycompany.ecommerce.dto.Product;
 import com.mycompany.ecommerce.helper.AES;
@@ -24,6 +25,9 @@ public class MerchantService {
 
 	@Autowired
 	MerchantDao merchantDao;
+
+	@Autowired
+	ProductDao productDao;
 
 	@Autowired
 	MailHelper mailHelper;
@@ -130,6 +134,20 @@ public class MerchantService {
 		} else {
 			modelMap.put("list", list);
 			return "MerchantProducts";
+		}
+	}
+
+	public String delete(int id, ModelMap modelMap, Merchant merchant) {
+		Product product = productDao.findById(id);
+		if (product == null) {
+			modelMap.put("neg", "Something Went Wrong");
+			return "Main";
+		} else {
+			merchant.getProducts().remove(product);
+			merchantDao.save(merchant);
+			productDao.delete(product);
+			modelMap.put("pos", "Product Deleted Success");
+			return fetchProducts(merchant, modelMap);
 		}
 	}
 
