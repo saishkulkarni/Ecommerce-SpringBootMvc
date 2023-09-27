@@ -124,5 +124,32 @@ public class MerchantController {
 			return "Main";
 		}
 	}
-
+	
+	@GetMapping("/edit/{id}")
+	public String editProduct(@PathVariable int id,HttpSession session,ModelMap modelMap)
+	{
+		Merchant merchant = (Merchant) session.getAttribute("merchant");
+		if (merchant != null) {
+			return merchantService.edit(id,modelMap);
+		} else {
+			modelMap.put("neg", "Invalid Session");
+			return "Main";
+		}
+	}
+	
+	@PostMapping("/update-product")
+	public String updateProduct(@Valid Product product, BindingResult result, @RequestParam MultipartFile pic,
+			ModelMap map, HttpSession session) throws IOException {
+		Merchant merchant = (Merchant) session.getAttribute("merchant");
+		if (merchant != null) {
+			if (result.hasErrors())
+				return "EditProduct";
+			else {
+				return merchantService.editProduct(product, pic, map, merchant,session);
+			}
+		} else {
+			map.put("neg", "Invalid Session");
+			return "Main";
+		}
+	}
 }

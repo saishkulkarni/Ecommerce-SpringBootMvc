@@ -38,7 +38,7 @@
 					<td>${product.getStock()}</td>
 					<td>${product.getPrice()}</td>
 					<td><a href="/merchant/delete/${product.getId()}"><button>Delete</button></a></td>
-					<td><a href="/merchant/edit"><button>Edit</button></a></td>
+					<td><a href="/merchant/edit/${product.getId()}"><button>Edit</button></a></td>
 				</tr>
 			</c:forEach>
 		</tbody>

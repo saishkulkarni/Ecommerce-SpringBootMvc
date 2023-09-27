@@ -19,6 +19,7 @@ import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.helper.MailHelper;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Service
 public class MerchantService {
@@ -40,7 +41,7 @@ public class MerchantService {
 			merchant.setOtp(otp);
 			merchant.setPassword(AES.encrypt(merchant.getPassword(), "123"));
 			merchantDao.save(merchant);
-			mailHelper.sendOtp(merchant);
+			// mailHelper.sendOtp(merchant);
 			modelMap.put("id", merchant.getId());
 			return "VerifyOtp1";
 		} else {
@@ -50,7 +51,7 @@ public class MerchantService {
 					return "MerchantSignup";
 				} else {
 					if (merchant2 != null) {
-						mailHelper.sendOtp(merchant1);
+						// mailHelper.sendOtp(merchant1);
 						modelMap.put("id", merchant1.getId());
 						return "VerifyOtp1";
 					} else {
@@ -107,7 +108,8 @@ public class MerchantService {
 		}
 	}
 
-	public String addProduct(Product product, MultipartFile pic, ModelMap map, Merchant merchant, HttpSession session) throws IOException {
+	public String addProduct(Product product, MultipartFile pic, ModelMap map, Merchant merchant, HttpSession session)
+			throws IOException {
 		byte[] picture = new byte[pic.getInputStream().available()];
 		pic.getInputStream().read(picture);
 
@@ -119,9 +121,7 @@ public class MerchantService {
 
 		list.add(product);
 		merchant.setProducts(list);
-
-		merchantDao.save(merchant);
-		session.setAttribute("merchant", merchant);
+		session.setAttribute("merchant", merchantDao.save(merchant));
 		map.put("pos", "Product Added Success");
 		return "MerchantHome";
 	}
@@ -138,28 +138,59 @@ public class MerchantService {
 	}
 
 	public String delete(int id, ModelMap modelMap, Merchant merchant, HttpSession session) {
-		System.out.println(id);
 		Product product = productDao.findById(id);
 		if (product == null) {
 			modelMap.put("neg", "Something Went Wrong");
 			return "Main";
 		} else {
 
-			for(Product product1:merchant.getProducts())
-			{
-				if(product1.getName().equals(product.getName()))
-				{
-					product=product1;
+			for (Product product1 : merchant.getProducts()) {
+				if (product1.getName().equals(product.getName())) {
+					product = product1;
 					break;
 				}
 			}
 			merchant.getProducts().remove(product);
-			merchantDao.save(merchant);
-			session.setAttribute("merchant",merchant);
+			Merchant merchant2 = merchantDao.save(merchant);
+			session.setAttribute("merchant", merchant2);
 			productDao.delete(product);
 			modelMap.put("pos", "Product Deleted Success");
-			return fetchProducts(merchant, modelMap);
+			return fetchProducts(merchant2, modelMap);
 		}
+	}
+
+	public String edit(int id, ModelMap modelMap) {
+		Product product = productDao.findById(id);
+		if (product == null) {
+			modelMap.put("neg", "Something Went Wrong");
+			return "Main";
+		} else {
+			modelMap.put("product", product);
+			return "EditProduct";
+		}
+	}
+
+	public String editProduct(@Valid Product product, MultipartFile pic, ModelMap map, Merchant merchant,
+			HttpSession session) throws IOException {
+		byte[] picture = new byte[pic.getInputStream().available()];
+		pic.getInputStream().read(picture);
+
+		if (picture.length == 0) {
+			product.setPicture(productDao.findById(product.getId()).getPicture());
+		} else {
+			product.setPicture(picture);
+		}
+
+		List<Product> list = merchant.getProducts();
+
+		if (list == null)
+			list = new ArrayList<Product>();
+
+		list.add(product);
+		merchant.setProducts(list);
+		session.setAttribute("merchant", merchantDao.save(merchant));
+		map.put("pos", "Product Updated Success");
+		return "MerchantHome";
 	}
 
 }
