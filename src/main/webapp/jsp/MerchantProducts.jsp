@@ -8,6 +8,8 @@
 <title>Merchant Products</title>
 </head>
 <body>
+<h1 style="color: green">${pos}</h1>
+	<h1 style="color: red">${neg}</h1>
 	<h1>Merchant Products</h1>
 	<table border="1">
 		<thead>

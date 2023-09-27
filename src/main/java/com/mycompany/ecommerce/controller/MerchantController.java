@@ -94,7 +94,7 @@ public class MerchantController {
 			if (result.hasErrors())
 				return "AddProduct";
 			else {
-				return merchantService.addProduct(product, pic, map, merchant);
+				return merchantService.addProduct(product, pic, map, merchant,session);
 			}
 		} else {
 			map.put("neg", "Invalid Session");
@@ -118,7 +118,7 @@ public class MerchantController {
 	{
 		Merchant merchant = (Merchant) session.getAttribute("merchant");
 		if (merchant != null) {
-			return merchantService.delete(id,modelMap,merchant);
+			return merchantService.delete(id,modelMap,merchant,session);
 		} else {
 			modelMap.put("neg", "Invalid Session");
 			return "Main";

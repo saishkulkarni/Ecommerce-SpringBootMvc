@@ -107,7 +107,7 @@ public class MerchantService {
 		}
 	}
 
-	public String addProduct(Product product, MultipartFile pic, ModelMap map, Merchant merchant) throws IOException {
+	public String addProduct(Product product, MultipartFile pic, ModelMap map, Merchant merchant, HttpSession session) throws IOException {
 		byte[] picture = new byte[pic.getInputStream().available()];
 		pic.getInputStream().read(picture);
 
@@ -121,7 +121,7 @@ public class MerchantService {
 		merchant.setProducts(list);
 
 		merchantDao.save(merchant);
-
+		session.setAttribute("merchant", merchant);
 		map.put("pos", "Product Added Success");
 		return "MerchantHome";
 	}
@@ -137,14 +137,25 @@ public class MerchantService {
 		}
 	}
 
-	public String delete(int id, ModelMap modelMap, Merchant merchant) {
+	public String delete(int id, ModelMap modelMap, Merchant merchant, HttpSession session) {
+		System.out.println(id);
 		Product product = productDao.findById(id);
 		if (product == null) {
 			modelMap.put("neg", "Something Went Wrong");
 			return "Main";
 		} else {
+
+			for(Product product1:merchant.getProducts())
+			{
+				if(product1.getName().equals(product.getName()))
+				{
+					product=product1;
+					break;
+				}
+			}
 			merchant.getProducts().remove(product);
 			merchantDao.save(merchant);
+			session.setAttribute("merchant",merchant);
 			productDao.delete(product);
 			modelMap.put("pos", "Product Deleted Success");
 			return fetchProducts(merchant, modelMap);
