@@ -60,6 +60,6 @@
 	</table>
 	</mvc:form>
 	<br>
-	<a href="/merchant/home"><button>Back</button></a>
+	<a href="/merchant/fetch-products"><button>Back</button></a>
 </body>
 </html>

@@ -19,7 +19,6 @@ import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.helper.MailHelper;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 
 @Service
 public class MerchantService {
@@ -170,27 +169,21 @@ public class MerchantService {
 		}
 	}
 
-	public String editProduct(@Valid Product product, MultipartFile pic, ModelMap map, Merchant merchant,
+	public String editProduct(Product product, MultipartFile pic, ModelMap map, Merchant merchant,
 			HttpSession session) throws IOException {
 		byte[] picture = new byte[pic.getInputStream().available()];
 		pic.getInputStream().read(picture);
-
+		
 		if (picture.length == 0) {
 			product.setPicture(productDao.findById(product.getId()).getPicture());
 		} else {
 			product.setPicture(picture);
 		}
-
-		List<Product> list = merchant.getProducts();
-
-		if (list == null)
-			list = new ArrayList<Product>();
-
-		list.add(product);
-		merchant.setProducts(list);
-		session.setAttribute("merchant", merchantDao.save(merchant));
+		productDao.save(product);
+		Merchant merchant2=merchantDao.fetchById(merchant.getId());
+		session.setAttribute("merchant", merchant2);
 		map.put("pos", "Product Updated Success");
-		return "MerchantHome";
+		return fetchProducts(merchant2, map);
 	}
 
 }

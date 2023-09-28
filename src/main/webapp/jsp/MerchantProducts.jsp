@@ -35,8 +35,8 @@
 						src="data:image/jpeg;base64,${base64}">
 					</td>
 					<td>${product.getCategory()}</td>
-					<td>${product.getStock()}</td>
 					<td>${product.getPrice()}</td>
+					<td>${product.getStock()}</td>
 					<td><a href="/merchant/delete/${product.getId()}"><button>Delete</button></a></td>
 					<td><a href="/merchant/edit/${product.getId()}"><button>Edit</button></a></td>
 				</tr>

@@ -19,4 +19,8 @@ public class ProductDao {
 		productRepository.delete(product);
 	}
 
+	public void save(Product product) {
+		productRepository.save(product);
+	}
+
 }
