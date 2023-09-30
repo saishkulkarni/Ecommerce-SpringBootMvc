@@ -6,7 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
+import com.mycompany.ecommerce.dao.CustomerDao;
+import com.mycompany.ecommerce.dao.MerchantDao;
 import com.mycompany.ecommerce.dao.ProductDao;
+import com.mycompany.ecommerce.dto.Customer;
+import com.mycompany.ecommerce.dto.Merchant;
 import com.mycompany.ecommerce.dto.Product;
 import com.mycompany.ecommerce.helper.LoginHelper;
 
@@ -17,6 +21,12 @@ public class AdminService {
 
 	@Autowired
 	ProductDao productDao;
+
+	@Autowired
+	MerchantDao merchantDao;
+
+	@Autowired
+	CustomerDao customerDao;
 
 	public String login(LoginHelper helper, ModelMap map, HttpSession session) {
 		if (helper.getEmail().equals("admin@jsp.com")) {
@@ -51,14 +61,36 @@ public class AdminService {
 			map.put("neg", "Something Went Wrong");
 			return "Main";
 		} else {
-			if(product.isApproved())
+			if (product.isApproved())
 				product.setApproved(false);
 			else
 				product.setApproved(true);
-			
-			productDao.save(product); 
+
+			productDao.save(product);
 			map.put("pos", "Status Updated Success");
 			return fetchProducts(map);
+		}
+	}
+
+	public String fetchMerchants(ModelMap modelMap) {
+		List<Merchant> list = merchantDao.fetchAllMerchants();
+		if (list.isEmpty()) {
+			modelMap.put("neg", "No Merchant Enrolled");
+			return "AdminHome";
+		} else {
+			modelMap.put("list", list);
+			return "AdminMerchants";
+		}
+	}
+
+	public String fetchCustomers(ModelMap modelMap) {
+		List<Customer> list = customerDao.fetchAllCustomers();
+		if (list.isEmpty()) {
+			modelMap.put("neg", "No Customer Enrolled");
+			return "AdminHome";
+		} else {
+			modelMap.put("list", list);
+			return "AdminCustomers";
 		}
 	}
 

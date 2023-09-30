@@ -64,4 +64,26 @@ public class AdminController {
 			return "Main";
 		}
 	}
+	
+	@GetMapping("/fetch-merchants")
+	public String fetchMerchants(HttpSession session, ModelMap modelMap) {
+		String admin =(String) session.getAttribute("admin");
+		if (admin != null) {
+			return adminService.fetchMerchants(modelMap);
+		} else {
+			modelMap.put("neg", "Invalid Session");
+			return "Main";
+		}
+	}
+	
+	@GetMapping("/fetch-customers")
+	public String fetchCustomers(HttpSession session, ModelMap modelMap) {
+		String admin =(String) session.getAttribute("admin");
+		if (admin != null) {
+			return adminService.fetchCustomers(modelMap);
+		} else {
+			modelMap.put("neg", "Invalid Session");
+			return "Main";
+		}
+	}
 }

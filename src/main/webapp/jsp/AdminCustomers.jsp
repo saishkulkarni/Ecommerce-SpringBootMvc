@@ -1,11 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@page import="org.apache.commons.codec.binary.Base64"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Home</title>
+<title>Customers List</title>
 
 <style type="text/css">
 /* Reset some default styles */
@@ -53,6 +53,32 @@ h3 {
 	color: green;
 	font-size: 28px;
 }
+/* Table styles */
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+}
+
+table, th, td {
+	border: 1px solid #ccc;
+}
+
+th, td {
+	padding: 10px;
+	text-align: center;
+}
+
+th {
+	background-color: #007BFF;
+	color: #fff;
+}
+
+/* Image styles */
+.product-image {
+	max-width: 100px;
+	max-height: 100px;
+}
 
 /* Button styles */
 .button-container {
@@ -71,13 +97,13 @@ h3 {
 	margin: 10px;
 }
 
-/* Logout button style */
-.logout-button {
+/* Back button style */
+.back-button {
 	text-align: center;
 	margin-top: 20px;
 }
 
-.logout-button button {
+.back-button button {
 	background-color: #FF4500;
 	color: #fff;
 	padding: 10px 20px;
@@ -90,20 +116,41 @@ h3 {
 </head>
 <body>
 	<header>
-		<h1>Admin Home Page</h1>
+		<h1>Cusromers</h1>
 	</header>
 
 	<div class="container">
 		<h3>${pos}</h3>
 		<h2>${neg}</h2>
-		<div class="button-container">
-			<a href="/admin/fetch-products"><button>Approve Products</button></a>
-			<a href="/admin/fetch-merchants"><button>View Merchant</button></a> <a
-				href="/admin/fetch-customers"><button>View Customer</button></a>
-		</div>
+		<table>
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Customer Name</th>
+					<th>Email</th>
+					<th>Mobile</th>
+					<th>Gender</th>
+					<th>Date of Birth</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="customer" items="${list}">
+					<tr>
+						<td>${customer.getId()}</td>
+						<td>${customer.getName()}</td>
+						<td>${customer.getEmail()}</td>
+						<td>${customer.getMobile()}</td>
+						<td>${customer.getGender()}</td>
+						<td>${customer.getDob()}</td>
+						<td>${customer.isStatus()}</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
 
-		<div class="logout-button">
-			<a href="/logout"><button>Logout</button></a>
+		<div class="button-container">
+			<a href="/admin/home"><button>Back</button></a>
 		</div>
 	</div>
 	<script>

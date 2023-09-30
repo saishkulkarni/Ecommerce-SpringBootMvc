@@ -14,5 +14,24 @@
 	<a href=""><button>View Orders</button></a>
 	<a href=""><button>Edit Details</button></a>
 	<a href="/logout"><button>Logout</button></a>
+	<script>
+		function hideElements() {
+			var h2Element = document.querySelector('h2');
+			var h3Element = document.querySelector('h3');
+
+			if (h2Element) {
+				setTimeout(function() {
+					h2Element.style.display = 'none';
+				}, 1000);
+			}
+
+			if (h3Element) {
+				setTimeout(function() {
+					h3Element.style.display = 'none';
+				}, 1000);
+			}
+		}
+		window.onload = hideElements;
+	</script>
 </body>
 </html>
