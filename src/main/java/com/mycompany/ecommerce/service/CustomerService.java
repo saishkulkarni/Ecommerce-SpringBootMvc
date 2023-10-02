@@ -1,5 +1,6 @@
 package com.mycompany.ecommerce.service;
 
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import com.mycompany.ecommerce.dao.CustomerDao;
+import com.mycompany.ecommerce.dao.ProductDao;
 import com.mycompany.ecommerce.dto.Customer;
+import com.mycompany.ecommerce.dto.Product;
 import com.mycompany.ecommerce.helper.AES;
 import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.helper.MailHelper;
@@ -23,6 +26,9 @@ public class CustomerService {
 	@Autowired
 	MailHelper mailHelper;
 
+	@Autowired
+	ProductDao productDao;
+
 	public String signup(Customer customer, ModelMap modelMap) {
 		Customer customer1 = customerDao.fetchByEmail(customer.getEmail());
 		Customer customer2 = customerDao.fetchByMobile(customer.getMobile());
@@ -31,7 +37,7 @@ public class CustomerService {
 			customer.setPassword(AES.encrypt(customer.getPassword(), "123"));
 			customer.setOtp(otp);
 			customerDao.save(customer);
-			mailHelper.sendOtp(customer);
+			// mailHelper.sendOtp(customer);
 			modelMap.put("id", customer.getId());
 			return "VerifyOtp2";
 		} else {
@@ -89,12 +95,25 @@ public class CustomerService {
 					return "CustomerHome";
 				} else {
 					map.put("neg", "Verify Your OTP First");
-					return "Customer";
+//					mailHelper.sendOtp(customer);
+					map.put("id", customer.getId());
+					return "VerifyOtp2";
 				}
 			} else {
 				map.put("neg", "Incorrect Password");
 				return "Customer";
 			}
+		}
+	}
+
+	public String fetchProducts(ModelMap modelMap) {
+		List<Product> list = productDao.fetchAprovedProducts();
+		if (list.isEmpty()) {
+			modelMap.put("neg", "No Products Available");
+			return "CustomerHome";
+		} else {
+			modelMap.put("list", list);
+			return "CustomerProducts";
 		}
 	}
 

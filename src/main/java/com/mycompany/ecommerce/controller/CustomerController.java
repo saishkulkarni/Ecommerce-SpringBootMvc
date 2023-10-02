@@ -64,4 +64,15 @@ public class CustomerController {
 	public String login(LoginHelper helper, ModelMap map, HttpSession session) {
 		return customerService.login(helper, map, session);
 	}
+	
+	@GetMapping("/fetch-products")
+	public String fetchProducts(HttpSession session, ModelMap modelMap) {
+		Customer customer =(Customer) session.getAttribute("customer");
+		if (customer != null) {
+			return customerService.fetchProducts(modelMap);
+		} else {
+			modelMap.put("neg", "Invalid Session");
+			return "Main";
+		}
+	}
 }

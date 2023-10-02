@@ -29,4 +29,8 @@ public class ProductDao {
 		return productRepository.findAll();
 	}
 
+	public List<Product> fetchAprovedProducts() {
+		return productRepository.findByApprovedTrue();
+	}
+
 }
