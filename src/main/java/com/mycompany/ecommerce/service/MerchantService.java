@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mycompany.ecommerce.dao.MerchantDao;
 import com.mycompany.ecommerce.dao.ProductDao;
 import com.mycompany.ecommerce.dto.Merchant;
-import com.mycompany.ecommerce.dto.Product;
+import com.mycompany.ecommerce.dto.MerchantProduct;
 import com.mycompany.ecommerce.helper.AES;
 import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.helper.MailHelper;
@@ -107,16 +107,16 @@ public class MerchantService {
 		}
 	}
 
-	public String addProduct(Product product, MultipartFile pic, ModelMap map, Merchant merchant, HttpSession session)
+	public String addProduct(MerchantProduct product, MultipartFile pic, ModelMap map, Merchant merchant, HttpSession session)
 			throws IOException {
 		byte[] picture = new byte[pic.getInputStream().available()];
 		pic.getInputStream().read(picture);
 
 		product.setPicture(picture);
-		List<Product> list = merchant.getProducts();
+		List<MerchantProduct> list = merchant.getProducts();
 
 		if (list == null)
-			list = new ArrayList<Product>();
+			list = new ArrayList<MerchantProduct>();
 
 		list.add(product);
 		merchant.setProducts(list);
@@ -126,7 +126,7 @@ public class MerchantService {
 	}
 
 	public String fetchProducts(Merchant merchant, ModelMap modelMap) {
-		List<Product> list = merchant.getProducts();
+		List<MerchantProduct> list = merchant.getProducts();
 		if (list.isEmpty()) {
 			modelMap.put("neg", "No Products Available");
 			return "MerchantHome";
@@ -137,13 +137,13 @@ public class MerchantService {
 	}
 
 	public String delete(int id, ModelMap modelMap, Merchant merchant, HttpSession session) {
-		Product product = productDao.findById(id);
+		MerchantProduct product = productDao.findById(id);
 		if (product == null) {
 			modelMap.put("neg", "Something Went Wrong");
 			return "Main";
 		} else {
 
-			for (Product product1 : merchant.getProducts()) {
+			for (MerchantProduct product1 : merchant.getProducts()) {
 				if (product1.getName().equals(product.getName())) {
 					product = product1;
 					break;
@@ -159,7 +159,7 @@ public class MerchantService {
 	}
 
 	public String edit(int id, ModelMap modelMap) {
-		Product product = productDao.findById(id);
+		MerchantProduct product = productDao.findById(id);
 		if (product == null) {
 			modelMap.put("neg", "Something Went Wrong");
 			return "Main";
@@ -169,18 +169,18 @@ public class MerchantService {
 		}
 	}
 
-	public String editProduct(Product product, MultipartFile pic, ModelMap map, Merchant merchant,
-			HttpSession session) throws IOException {
+	public String editProduct(MerchantProduct product, MultipartFile pic, ModelMap map, Merchant merchant, HttpSession session)
+			throws IOException {
 		byte[] picture = new byte[pic.getInputStream().available()];
 		pic.getInputStream().read(picture);
-		
+
 		if (picture.length == 0) {
 			product.setPicture(productDao.findById(product.getId()).getPicture());
 		} else {
 			product.setPicture(picture);
 		}
 		productDao.save(product);
-		Merchant merchant2=merchantDao.fetchById(merchant.getId());
+		Merchant merchant2 = merchantDao.fetchById(merchant.getId());
 		session.setAttribute("merchant", merchant2);
 		map.put("pos", "Product Updated Success");
 		return fetchProducts(merchant2, map);

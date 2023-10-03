@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,6 +71,18 @@ public class CustomerController {
 		Customer customer =(Customer) session.getAttribute("customer");
 		if (customer != null) {
 			return customerService.fetchProducts(modelMap);
+		} else {
+			modelMap.put("neg", "Invalid Session");
+			return "Main";
+		}
+	}
+	
+	@GetMapping("/cart-add/{id}")
+	public String addToCart(@PathVariable int id,HttpSession session, ModelMap modelMap)
+	{
+		Customer customer =(Customer) session.getAttribute("customer");
+		if (customer != null) {
+			return customerService.addToCart(id,session,customer,modelMap);
 		} else {
 			modelMap.put("neg", "Invalid Session");
 			return "Main";

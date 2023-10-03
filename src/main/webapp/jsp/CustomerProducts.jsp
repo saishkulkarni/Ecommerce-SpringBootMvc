@@ -151,9 +151,9 @@ a{
 						<td>${product.getCategory()}</td>
 						<td>${product.getPrice()}</td>
 						<td>${product.getStock()}</td>
-						<td><a href="#">-</a></td>
+						<td><a href="/customer/cart-remove/${product.getId()}">-</a></td>
 						<td>0</td>
-						<td><a href="#">+</a></td>
+						<td><a href="/customer/cart-add/${product.getId()}">+</a></td>
 						</tr>
 				</c:forEach>
 			</tbody>

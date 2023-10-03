@@ -49,5 +49,5 @@ public class Merchant {
 	private int otp;
 
 	@OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-	List<Product> products;
+	List<MerchantProduct> products;
 }

@@ -11,7 +11,7 @@ import com.mycompany.ecommerce.dao.MerchantDao;
 import com.mycompany.ecommerce.dao.ProductDao;
 import com.mycompany.ecommerce.dto.Customer;
 import com.mycompany.ecommerce.dto.Merchant;
-import com.mycompany.ecommerce.dto.Product;
+import com.mycompany.ecommerce.dto.MerchantProduct;
 import com.mycompany.ecommerce.helper.LoginHelper;
 
 import jakarta.servlet.http.HttpSession;
@@ -45,7 +45,7 @@ public class AdminService {
 	}
 
 	public String fetchProducts(ModelMap modelMap) {
-		List<Product> list = productDao.fetchAllProducts();
+		List<MerchantProduct> list = productDao.fetchAllProducts();
 		if (list.isEmpty()) {
 			modelMap.put("neg", "No Products Available");
 			return "AdminHome";
@@ -56,7 +56,7 @@ public class AdminService {
 	}
 
 	public String changeProductStatus(int id, ModelMap map) {
-		Product product = productDao.findById(id);
+		MerchantProduct product = productDao.findById(id);
 		if (product == null) {
 			map.put("neg", "Something Went Wrong");
 			return "Main";

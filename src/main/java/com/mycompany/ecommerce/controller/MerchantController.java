@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mycompany.ecommerce.dto.Merchant;
-import com.mycompany.ecommerce.dto.Product;
+import com.mycompany.ecommerce.dto.MerchantProduct;
 import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.service.MerchantService;
 
@@ -32,7 +32,7 @@ public class MerchantController {
 	Merchant merchant;
 
 	@Autowired
-	Product product;
+	MerchantProduct product;
 
 	@GetMapping
 	public String loadHome() {
@@ -87,14 +87,14 @@ public class MerchantController {
 	}
 
 	@PostMapping("/add-product")
-	public String addProduct(@Valid Product product, BindingResult result, @RequestParam MultipartFile pic,
+	public String addProduct(@Valid MerchantProduct product, BindingResult result, @RequestParam MultipartFile pic,
 			ModelMap map, HttpSession session) throws IOException {
 		Merchant merchant = (Merchant) session.getAttribute("merchant");
 		if (merchant != null) {
 			if (result.hasErrors())
 				return "AddProduct";
 			else {
-				return merchantService.addProduct(product, pic, map, merchant,session);
+				return merchantService.addProduct(product, pic, map, merchant, session);
 			}
 		} else {
 			map.put("neg", "Invalid Session");
@@ -112,40 +112,38 @@ public class MerchantController {
 			return "Main";
 		}
 	}
-	
+
 	@GetMapping("/delete/{id}")
-	public String deleteProduct(@PathVariable int id,HttpSession session,ModelMap modelMap)
-	{
+	public String deleteProduct(@PathVariable int id, HttpSession session, ModelMap modelMap) {
 		Merchant merchant = (Merchant) session.getAttribute("merchant");
 		if (merchant != null) {
-			return merchantService.delete(id,modelMap,merchant,session);
+			return merchantService.delete(id, modelMap, merchant, session);
 		} else {
 			modelMap.put("neg", "Invalid Session");
 			return "Main";
 		}
 	}
-	
+
 	@GetMapping("/edit/{id}")
-	public String editProduct(@PathVariable int id,HttpSession session,ModelMap modelMap)
-	{
+	public String editProduct(@PathVariable int id, HttpSession session, ModelMap modelMap) {
 		Merchant merchant = (Merchant) session.getAttribute("merchant");
 		if (merchant != null) {
-			return merchantService.edit(id,modelMap);
+			return merchantService.edit(id, modelMap);
 		} else {
 			modelMap.put("neg", "Invalid Session");
 			return "Main";
 		}
 	}
-	
+
 	@PostMapping("/update-product")
-	public String updateProduct(@Valid Product product, BindingResult result, @RequestParam MultipartFile pic,
+	public String updateProduct(@Valid MerchantProduct product, BindingResult result, @RequestParam MultipartFile pic,
 			ModelMap map, HttpSession session) throws IOException {
 		Merchant merchant = (Merchant) session.getAttribute("merchant");
 		if (merchant != null) {
 			if (result.hasErrors())
 				return "EditProduct";
 			else {
-				return merchantService.editProduct(product, pic, map, merchant,session);
+				return merchantService.editProduct(product, pic, map, merchant, session);
 			}
 		} else {
 			map.put("neg", "Invalid Session");
