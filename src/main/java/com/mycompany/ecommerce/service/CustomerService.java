@@ -174,4 +174,53 @@ public class CustomerService {
 		}
 	}
 
+	public String removeFromCart(int id, HttpSession session, Customer customer, ModelMap modelMap) {
+		MerchantProduct product = productDao.findById(id);
+		if (product != null) {
+			ShoppingCart cart = customer.getCart();
+			if (cart == null) {
+				modelMap.put("neg", "No Items in Cart");
+				return fetchProducts(modelMap, customerDao.fetchById(customer.getId()));
+			} else {
+				List<CustomerProduct> list = cart.getCustomerProducts();
+				if (list == null) {
+					modelMap.put("neg", "No Items in Cart");
+					return fetchProducts(modelMap, customerDao.fetchById(customer.getId()));
+				} else {
+					CustomerProduct customerProduct = null;
+					for (CustomerProduct customerProduct2 : list) {
+						if (product.getName().equals(customerProduct2.getName())) {
+							customerProduct = customerProduct2;
+							break;
+						}
+					}
+					if (customerProduct == null) {
+						modelMap.put("neg", "No Items in Cart");
+						return fetchProducts(modelMap, customerDao.fetchById(customer.getId()));
+					} else {
+						if (customerProduct.getQuantity() > 1) {
+							customerProduct.setQuantity(customerProduct.getQuantity() - 1);
+							customerProduct.setPrice(customerProduct.getPrice() - product.getPrice());
+							product.setStock(product.getStock() + 1);
+							productDao.save(product);
+							productDao.save(customerProduct);
+						} else {
+							list.remove(customerProduct);
+							product.setStock(product.getStock() + 1);
+							productDao.save(product);
+							productDao.save(cart);
+						}
+						modelMap.put("pos", "Item removed from Cart");
+						session.setAttribute("customer", customerDao.fetchById(customer.getId()));
+						return fetchProducts(modelMap, customerDao.fetchById(customer.getId()));
+
+					}
+				}
+			}
+		} else {
+			modelMap.put("neg", "Something went Wrong");
+			return "Main";
+		}
+	}
+
 }

@@ -89,5 +89,17 @@ public class CustomerController {
 		}
 	}
 	
+	@GetMapping("/cart-remove/{id}")
+	public String removeFromCart(@PathVariable int id,HttpSession session, ModelMap modelMap)
+	{
+		Customer customer =(Customer) session.getAttribute("customer");
+		if (customer != null) {
+			return customerService.removeFromCart(id,session,customer,modelMap);
+		} else {
+			modelMap.put("neg", "Invalid Session");
+			return "Main";
+		}
+	}
+	
 	
 }
