@@ -70,7 +70,7 @@ public class CustomerController {
 	public String fetchProducts(HttpSession session, ModelMap modelMap) {
 		Customer customer =(Customer) session.getAttribute("customer");
 		if (customer != null) {
-			return customerService.fetchProducts(modelMap);
+			return customerService.fetchProducts(modelMap,customer);
 		} else {
 			modelMap.put("neg", "Invalid Session");
 			return "Main";
@@ -88,4 +88,6 @@ public class CustomerController {
 			return "Main";
 		}
 	}
+	
+	
 }

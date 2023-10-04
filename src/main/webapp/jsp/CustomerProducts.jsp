@@ -81,7 +81,7 @@ th {
 	max-height: 100px;
 }
 
-a{
+a {
 	text-decoration: none;
 	font-size: 50px;
 }
@@ -152,16 +152,31 @@ a{
 						<td>${product.getPrice()}</td>
 						<td>${product.getStock()}</td>
 						<td><a href="/customer/cart-remove/${product.getId()}">-</a></td>
-						<td>0</td>
+						<td>
+						<c:if test="${cartitems==null}">
+						0
+						</c:if> 
+						<c:if test="${cartitems!=null}">
+						<c:set var="flag" value="true"></c:set>
+						<c:forEach var="item" items="${cartitems}">
+						<c:if test="${item.getName().equals(product.getName())}">
+						${item.getQuantity()}
+						<c:set var="flag" value="false"></c:set>
+						</c:if>
+						</c:forEach>
+						<c:if test="${flag==true}">
+						0
+						</c:if>
+						</c:if>
+						</td>
 						<td><a href="/customer/cart-add/${product.getId()}">+</a></td>
-						</tr>
+					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
 
 		<div class="button-container">
-		<a href="#"><button>View Cart</button></a>
-			<a href="/customer/home"><button>Back</button></a>
+			<a href="#"><button>View Cart</button></a> <a href="/customer/home"><button>Back</button></a>
 		</div>
 	</div>
 	<script>

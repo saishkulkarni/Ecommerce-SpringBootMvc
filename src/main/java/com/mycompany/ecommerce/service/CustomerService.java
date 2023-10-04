@@ -109,12 +109,16 @@ public class CustomerService {
 		}
 	}
 
-	public String fetchProducts(ModelMap modelMap) {
+	public String fetchProducts(ModelMap modelMap, Customer customer) {
 		List<MerchantProduct> list = productDao.fetchAprovedProducts();
 		if (list.isEmpty()) {
 			modelMap.put("neg", "No Products Available");
 			return "CustomerHome";
 		} else {
+			List<CustomerProduct> cartitems = null;
+			if (customer.getCart() != null && customer.getCart().getCustomerProducts() != null)
+				cartitems = customer.getCart().getCustomerProducts();
+			modelMap.put("cartitems", cartitems);
 			modelMap.put("list", list);
 			return "CustomerProducts";
 		}
@@ -151,6 +155,7 @@ public class CustomerService {
 					customerProduct.setPrice(product.getPrice());
 					customerProduct.setQuantity(1);
 					customerProducts.add(customerProduct);
+					cart.setCustomerProducts(customerProducts);
 				}
 				customerDao.save(customer);
 				session.setAttribute("customer", customerDao.fetchById(customer.getId()));
@@ -158,11 +163,11 @@ public class CustomerService {
 				productDao.save(product);
 
 				modelMap.put("pos", "Item Added to Cart");
-				
+
 			} else {
 				modelMap.put("neg", "Out of Stock");
 			}
-			return fetchProducts(modelMap);
+			return fetchProducts(modelMap, customerDao.fetchById(customer.getId()));
 		} else {
 			modelMap.put("neg", "Something went Wrong");
 			return "Main";
