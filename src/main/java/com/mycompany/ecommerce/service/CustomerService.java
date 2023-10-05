@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
@@ -13,10 +14,14 @@ import com.mycompany.ecommerce.dao.ProductDao;
 import com.mycompany.ecommerce.dto.Customer;
 import com.mycompany.ecommerce.dto.CustomerProduct;
 import com.mycompany.ecommerce.dto.MerchantProduct;
+import com.mycompany.ecommerce.dto.PaymentDetails;
 import com.mycompany.ecommerce.dto.ShoppingCart;
 import com.mycompany.ecommerce.helper.AES;
 import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.helper.MailHelper;
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -31,6 +36,9 @@ public class CustomerService {
 
 	@Autowired
 	ProductDao productDao;
+
+	@Autowired
+	PaymentDetails details;
 
 	public String signup(Customer customer, ModelMap modelMap) {
 		Customer customer1 = customerDao.fetchByEmail(customer.getEmail());
@@ -209,17 +217,67 @@ public class CustomerService {
 							product.setStock(product.getStock() + 1);
 							productDao.save(product);
 							productDao.save(cart);
+							productDao.delete(customerProduct);
 						}
 						modelMap.put("pos", "Item removed from Cart");
 						session.setAttribute("customer", customerDao.fetchById(customer.getId()));
 						return fetchProducts(modelMap, customerDao.fetchById(customer.getId()));
-
 					}
 				}
 			}
 		} else {
 			modelMap.put("neg", "Something went Wrong");
 			return "Main";
+		}
+	}
+
+	public String viewCart(HttpSession session, Customer customer, ModelMap modelMap) throws RazorpayException {
+		ShoppingCart cart = customer.getCart();
+		if (cart == null) {
+			modelMap.put("neg", "No Items in Cart");
+			return fetchProducts(modelMap, customerDao.fetchById(customer.getId()));
+		} else {
+			List<CustomerProduct> list = cart.getCustomerProducts();
+			if (list == null || list.isEmpty()) {
+				modelMap.put("neg", "No Items in Cart");
+				return fetchProducts(modelMap, customerDao.fetchById(customer.getId()));
+			} else {
+				boolean flag = true;
+				for (CustomerProduct customerProduct : list) {
+					if (customerProduct.getQuantity() > 0)
+						flag = false;
+					break;
+				}
+				if (flag) {
+					modelMap.put("neg", "No Items in Cart");
+					return fetchProducts(modelMap, customerDao.fetchById(customer.getId()));
+				} else {
+					double amount=0;
+					for(CustomerProduct customerProduct:list)
+					{
+						amount=amount+customerProduct.getPrice();
+					}
+		
+					JSONObject object = new JSONObject();
+					object.put("amount", (int) (amount * 100));
+					object.put("currency", "INR");
+					
+					RazorpayClient client = new RazorpayClient("rzp_test_pXzsaishztvFSoP8U0y", "CSRywILSxpj4nnthsaishtfisyY57");
+					Order order=client.orders.create(object);
+					
+					details.setAmount(order.get("amount").toString());
+					details.setCurrency(order.get("currency").toString());
+					details.setPaymentId(null);
+					details.setOrderId(order.get("id").toString());
+					details.setStatus(order.get("status"));
+					details.setKeyDetails("rzp_test_pXzztvFSoP8U0y");
+					
+					modelMap.put("details", productDao.saveDetails(details));
+					modelMap.put("items", list);
+					modelMap.put("customer", customer);
+					return "ViewCart";
+				}
+			}
 		}
 	}
 

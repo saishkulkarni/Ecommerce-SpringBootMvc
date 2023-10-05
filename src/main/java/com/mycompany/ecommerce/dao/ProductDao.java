@@ -7,9 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import com.mycompany.ecommerce.dto.CustomerProduct;
 import com.mycompany.ecommerce.dto.MerchantProduct;
+import com.mycompany.ecommerce.dto.PaymentDetails;
 import com.mycompany.ecommerce.dto.ShoppingCart;
 import com.mycompany.ecommerce.repository.CartRepository;
 import com.mycompany.ecommerce.repository.CustomerProductRepository;
+import com.mycompany.ecommerce.repository.PaymentDetailsRepository;
 import com.mycompany.ecommerce.repository.ProductRepository;
 
 @Repository
@@ -22,6 +24,9 @@ public class ProductDao {
 	
 	@Autowired
 	CartRepository cartRepository;
+	
+	@Autowired
+	PaymentDetailsRepository detailsRepository;
 	
 	public MerchantProduct findById(int id) {
 		return productRepository.findById(id).orElse(null);
@@ -49,6 +54,15 @@ public class ProductDao {
 	
 	public void save(ShoppingCart cart) {
 		cartRepository.save(cart);
+	}
+
+	public void delete(CustomerProduct customerProduct) {
+		customerProductRepository.delete(customerProduct);
+	}
+	
+	public PaymentDetails saveDetails(PaymentDetails details)
+	{
+		return detailsRepository.save(details);
 	}
 
 }

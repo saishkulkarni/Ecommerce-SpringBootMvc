@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Customer Products</title>
+<title>Customer Cart</title>
 
 <style type="text/css">
 /* Reset some default styles */
@@ -122,7 +122,7 @@ a {
 </head>
 <body>
 	<header>
-		<h1>Catalogue</h1>
+		<h1>Cart</h1>
 	</header>
 
 	<div class="container">
@@ -135,48 +135,33 @@ a {
 					<th>Picture</th>
 					<th>Category</th>
 					<th>Price</th>
-					<th>Stock</th>
-					<th>Remove</th>
 					<th>Quantity</th>
-					<th>Add</th>
+					<th>Total</th>
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach var="product" items="${list}">
+				<c:forEach var="product" items="${items}">
 					<tr>
 						<td>${product.getName()}</td>
 						<td><img class="product-image" alt="Product Image"
 							src="data:image/jpeg;base64,${Base64.encodeBase64String(product.getPicture())}">
 						</td>
 						<td>${product.getCategory()}</td>
-						<td>${product.getPrice()}</td>
-						<td>${product.getStock()}</td>
-						<td><a href="/customer/cart-remove/${product.getId()}">-</a></td>
-						<td>
-						<c:if test="${cartitems==null}">
-						0
-						</c:if> 
-						<c:if test="${cartitems!=null}">
-						<c:set var="flag" value="true"></c:set>
-						<c:forEach var="item" items="${cartitems}">
-						<c:if test="${item.getName().equals(product.getName())}">
-						${item.getQuantity()}
-						<c:set var="flag" value="false"></c:set>
-						</c:if>
-						</c:forEach>
-						<c:if test="${flag==true}">
-						0
-						</c:if>
-						</c:if>
-						</td>
-						<td><a href="/customer/cart-add/${product.getId()}">+</a></td>
-					</tr>
+						<td>${product.getPrice()/product.getQuantity()}</td>
+						<td>${product.getQuantity()}</td>
+						<td>${product.getPrice()}&#8377</td>
+						</tr>
 				</c:forEach>
+				<tr>
+				<th colspan="5">Total Price</th>
+				<td>${details.getAmount()/100}&#8377</td>
+				</tr>
 			</tbody>
 		</table>
 
 		<div class="button-container">
-			<a href="/customer/cart-view"><button>View Cart</button></a> <a href="/customer/home"><button>Back</button></a>
+		<button id="rzp-button1" >Pay</button>
+		<a href="/customer/fetch-products"><button>Back</button></a>
 		</div>
 	</div>
 	<script>
@@ -197,6 +182,35 @@ a {
 			}
 		}
 		window.onload = hideElements;
+	</script>
+	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+	<script>
+		var options = {
+			"key" : "${details.getKeyDetails()}", // Enter the Key ID generated from the Dashboard
+			"amount" : "${details.getAmount()}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+			"currency" : "${details.getCurrency()}",
+			"name" : "Shopping Cart", //your business name
+			"description" : "Test Transaction",
+			"image" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRllS5xtNEkqUQT5mY5HvLBeKfvwLqsrTl3Zw&usqp=CAU",
+			"order_id" : "${details.getOrderId()}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+			"callback_url" : "/abcd",
+			"prefill" : { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+				"name" : "${customer.getName()}", //your customer's name
+				"email" : "${customer.getEmail()}",
+				"contact" : "+91${customer.getMobile()}" //Provide the customer's phone number for better conversion rates 
+			},
+			"notes" : {
+				"address" : "Razorpay Corporate Office"
+			},
+			"theme" : {
+				"color" : "#3399cc"
+			}
+		};
+		var rzp1 = new Razorpay(options);
+		document.getElementById('rzp-button1').onclick = function(e) {
+			rzp1.open();
+			e.preventDefault();
+		}
 	</script>
 </body>
 </html>

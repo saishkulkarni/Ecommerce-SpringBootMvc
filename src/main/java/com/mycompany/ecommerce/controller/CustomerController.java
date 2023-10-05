@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.mycompany.ecommerce.dto.Customer;
 import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.service.CustomerService;
+import com.razorpay.RazorpayException;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -65,41 +66,49 @@ public class CustomerController {
 	public String login(LoginHelper helper, ModelMap map, HttpSession session) {
 		return customerService.login(helper, map, session);
 	}
-	
+
 	@GetMapping("/fetch-products")
 	public String fetchProducts(HttpSession session, ModelMap modelMap) {
-		Customer customer =(Customer) session.getAttribute("customer");
+		Customer customer = (Customer) session.getAttribute("customer");
 		if (customer != null) {
-			return customerService.fetchProducts(modelMap,customer);
+			return customerService.fetchProducts(modelMap, customer);
 		} else {
 			modelMap.put("neg", "Invalid Session");
 			return "Main";
 		}
 	}
-	
+
 	@GetMapping("/cart-add/{id}")
-	public String addToCart(@PathVariable int id,HttpSession session, ModelMap modelMap)
-	{
-		Customer customer =(Customer) session.getAttribute("customer");
+	public String addToCart(@PathVariable int id, HttpSession session, ModelMap modelMap) {
+		Customer customer = (Customer) session.getAttribute("customer");
 		if (customer != null) {
-			return customerService.addToCart(id,session,customer,modelMap);
+			return customerService.addToCart(id, session, customer, modelMap);
 		} else {
 			modelMap.put("neg", "Invalid Session");
 			return "Main";
 		}
 	}
-	
+
 	@GetMapping("/cart-remove/{id}")
-	public String removeFromCart(@PathVariable int id,HttpSession session, ModelMap modelMap)
-	{
-		Customer customer =(Customer) session.getAttribute("customer");
+	public String removeFromCart(@PathVariable int id, HttpSession session, ModelMap modelMap) {
+		Customer customer = (Customer) session.getAttribute("customer");
 		if (customer != null) {
-			return customerService.removeFromCart(id,session,customer,modelMap);
+			return customerService.removeFromCart(id, session, customer, modelMap);
 		} else {
 			modelMap.put("neg", "Invalid Session");
 			return "Main";
 		}
 	}
-	
-	
+
+	@GetMapping("/cart-view")
+	public String viewCart(HttpSession session, ModelMap modelMap) throws RazorpayException {
+		Customer customer = (Customer) session.getAttribute("customer");
+		if (customer != null) {
+			return customerService.viewCart(session, customer, modelMap);
+		} else {
+			modelMap.put("neg", "Invalid Session");
+			return "Main";
+		}
+	}
+
 }
