@@ -64,5 +64,9 @@ public class ProductDao {
 	{
 		return detailsRepository.save(details);
 	}
-
+	
+	public PaymentDetails find(int id)
+	{
+		return detailsRepository.findById(id).orElse(null);
+	}
 }

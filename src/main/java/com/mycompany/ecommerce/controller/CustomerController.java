@@ -111,4 +111,16 @@ public class CustomerController {
 		}
 	}
 
+	@PostMapping("/payment/{id}")
+	public String paymentCheck(@PathVariable int id, @RequestParam String razorpay_payment_id, HttpSession session,
+			ModelMap map) throws RazorpayException {
+		Customer customer = (Customer) session.getAttribute("customer");
+		if (customer != null) {
+			return customerService.checkPayment(id,customer,razorpay_payment_id,session,map);
+		} else {
+			map.put("neg", "Invalid Session");
+			return "Main";
+		}
+	}
+
 }

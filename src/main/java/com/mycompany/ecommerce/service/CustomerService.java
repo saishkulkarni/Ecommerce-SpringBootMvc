@@ -1,5 +1,6 @@
 package com.mycompany.ecommerce.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,6 +17,7 @@ import com.mycompany.ecommerce.dto.CustomerProduct;
 import com.mycompany.ecommerce.dto.MerchantProduct;
 import com.mycompany.ecommerce.dto.PaymentDetails;
 import com.mycompany.ecommerce.dto.ShoppingCart;
+import com.mycompany.ecommerce.dto.ShoppingOrder;
 import com.mycompany.ecommerce.helper.AES;
 import com.mycompany.ecommerce.helper.LoginHelper;
 import com.mycompany.ecommerce.helper.MailHelper;
@@ -38,7 +40,8 @@ public class CustomerService {
 	ProductDao productDao;
 
 	@Autowired
-	PaymentDetails details;
+	ShoppingOrder order;
+
 
 	public String signup(Customer customer, ModelMap modelMap) {
 		Customer customer1 = customerDao.fetchByEmail(customer.getEmail());
@@ -252,31 +255,70 @@ public class CustomerService {
 					modelMap.put("neg", "No Items in Cart");
 					return fetchProducts(modelMap, customerDao.fetchById(customer.getId()));
 				} else {
-					double amount=0;
-					for(CustomerProduct customerProduct:list)
-					{
-						amount=amount+customerProduct.getPrice();
+					double amount = 0;
+					for (CustomerProduct customerProduct : list) {
+						amount = amount + customerProduct.getPrice();
 					}
-		
+
 					JSONObject object = new JSONObject();
 					object.put("amount", (int) (amount * 100));
 					object.put("currency", "INR");
-					
-					RazorpayClient client = new RazorpayClient("rzp_test_pXzsaishztvFSoP8U0y", "CSRywILSxpj4nnthsaishtfisyY57");
-					Order order=client.orders.create(object);
-					
+
+					RazorpayClient client = new RazorpayClient("rzp_test_saishpXzztvFSoP8U0y", "CSRywILSsaishxpj4nnthtfisyY57");
+					Order order = client.orders.create(object);
+					PaymentDetails details=new PaymentDetails();
 					details.setAmount(order.get("amount").toString());
 					details.setCurrency(order.get("currency").toString());
 					details.setPaymentId(null);
 					details.setOrderId(order.get("id").toString());
 					details.setStatus(order.get("status"));
 					details.setKeyDetails("rzp_test_pXzztvFSoP8U0y");
-					
+
+					session.setAttribute("customer", customerDao.fetchById(customer.getId()));
 					modelMap.put("details", productDao.saveDetails(details));
 					modelMap.put("items", list);
-					modelMap.put("customer", customer);
+					modelMap.put("customer", customerDao.fetchById(customer.getId()));
 					return "ViewCart";
 				}
+			}
+		}
+	}
+
+	public String checkPayment(int id, Customer customer, String razorpay_payment_id, HttpSession session, ModelMap map)
+			throws RazorpayException {
+		PaymentDetails details = productDao.find(id);
+		if (details == null) {
+			map.put("neg", "Something went wrong");
+			return "Main";
+		} else {
+			if (razorpay_payment_id != null) {
+				details.setStatus("success");
+				details.setTime(LocalDateTime.now());
+				details.setPaymentId(razorpay_payment_id);
+				productDao.saveDetails(details);
+
+				order.setDateTime(LocalDateTime.now());
+				order.setPayment_id(razorpay_payment_id);
+				order.setPrice(Double.parseDouble(details.getAmount()) / 100);
+				order.setCustomerProducts(customer.getCart().getCustomerProducts());
+
+				List<ShoppingOrder> list = customer.getOrders();
+				if (list == null)
+					list = new ArrayList<ShoppingOrder>();
+				list.add(order);
+
+				customer.setOrders(list);
+				customer.setCart(null);
+				customerDao.save(customer);
+				
+				session.setAttribute("customer", customerDao.fetchById(customer.getId()));
+
+				map.put("pos", "Payment Done, Ordere Placed");
+				return "CustomerHome";
+
+			} else {
+				map.put("neg", "Payment Not Done");
+				return viewCart(session, customer, map);
 			}
 		}
 	}

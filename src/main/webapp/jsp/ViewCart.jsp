@@ -193,7 +193,7 @@ a {
 			"description" : "Test Transaction",
 			"image" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRllS5xtNEkqUQT5mY5HvLBeKfvwLqsrTl3Zw&usqp=CAU",
 			"order_id" : "${details.getOrderId()}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-			"callback_url" : "/abcd",
+			"callback_url" : "/customer/payment/${details.getId()}",
 			"prefill" : { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
 				"name" : "${customer.getName()}", //your customer's name
 				"email" : "${customer.getEmail()}",
@@ -203,7 +203,7 @@ a {
 				"address" : "Razorpay Corporate Office"
 			},
 			"theme" : {
-				"color" : "#3399cc"
+				"color" : "#047fc2"
 			}
 		};
 		var rzp1 = new Razorpay(options);
