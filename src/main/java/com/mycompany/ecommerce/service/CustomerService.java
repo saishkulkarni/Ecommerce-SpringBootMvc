@@ -127,8 +127,11 @@ public class CustomerService {
 			return "CustomerHome";
 		} else {
 			List<CustomerProduct> cartitems = null;
-			if (customer.getCart() != null && customer.getCart().getCustomerProducts() != null)
+			if (customer.getCart() != null)
+			{
+				if(customer.getCart().getCustomerProducts() != null)
 				cartitems = customer.getCart().getCustomerProducts();
+			}
 			modelMap.put("cartitems", cartitems);
 			modelMap.put("list", list);
 			return "CustomerProducts";
@@ -264,7 +267,7 @@ public class CustomerService {
 					object.put("amount", (int) (amount * 100));
 					object.put("currency", "INR");
 
-					RazorpayClient client = new RazorpayClient("rzp_test_saishpXzztvFSoP8U0y", "CSRywILSsaishxpj4nnthtfisyY57");
+					RazorpayClient client = new RazorpayClient("rzp_test_pXzztvFSoP8U0y", "CSRywILSxpj4nnthtfisyY57");
 					Order order = client.orders.create(object);
 					PaymentDetails details=new PaymentDetails();
 					details.setAmount(order.get("amount").toString());
@@ -320,6 +323,19 @@ public class CustomerService {
 				map.put("neg", "Payment Not Done");
 				return viewCart(session, customer, map);
 			}
+		}
+	}
+
+	public String fetchOrders(ModelMap modelMap, Customer customer) {
+		List<ShoppingOrder> orders = customer.getOrders();
+		if(orders==null || orders.isEmpty())
+		{
+			modelMap.put("neg", "No Orders Found");
+			return "CustomerHome";
+		}
+		else {
+			modelMap.put("orders", orders);
+			return "CustomerOrders";
 		}
 	}
 

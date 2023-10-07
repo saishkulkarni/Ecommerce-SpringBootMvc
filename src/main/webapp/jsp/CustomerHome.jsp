@@ -53,8 +53,7 @@ button:hover {
 
 	<div class="button-container">
 		<a href="/customer/fetch-products"><button>View Products</button></a>
-		<a href="#"><button>View Orders</button></a> <a href="#"><button>Edit
-				Details</button></a> <a href="/logout"><button>Logout</button></a>
+		<a href="/customer/fetch-orders"><button>View Orders</button></a><a href="/logout"><button>Logout</button></a>
 	</div>
 
 	<script>

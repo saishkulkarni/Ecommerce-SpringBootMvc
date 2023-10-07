@@ -122,5 +122,16 @@ public class CustomerController {
 			return "Main";
 		}
 	}
+	
+	@GetMapping("/fetch-orders")
+	public String fetchOrders(HttpSession session, ModelMap modelMap) {
+		Customer customer = (Customer) session.getAttribute("customer");
+		if (customer != null) {
+			return customerService.fetchOrders(modelMap, customer);
+		} else {
+			modelMap.put("neg", "Invalid Session");
+			return "Main";
+		}
+	}
 
 }
